@@ -13,12 +13,14 @@ Responses:
   - 400 Bad Request: Validation error or username already exists.
   - 500 Internal Server Error: An error occurred during registration.
 
+
   POST /user/login
 Description: Authenticate user and return a JWT.
 Request Body: {
   "username" : "string",
   "password" : "string"
 }
+
 Responses:
 200 OK: User logged in successfully, returns a JWT token.
 400 Bad Request: Validation error or incorrect username/password.
@@ -31,6 +33,7 @@ Responses:
 401 Unauthorized: Access denied, please login or signup.
 500 Internal Server Error: An error occurred while retrieving favorites.
 
+
 POST /user/favorites/:medicineId
 Description: Add a medicine to favorites (protected).
 Parameters:
@@ -41,6 +44,7 @@ Responses:
 404 Not Found: User not found.
 500 Internal Server Error: An error occurred while adding the medicine to favorites.
 
+
 DELETE /user/favorites/:medicineId
 Description: Remove a medicine from favorites (protected).
 Parameters:
@@ -50,6 +54,7 @@ Responses:
 400 Bad Request: Invalid medicineId format.
 404 Not Found: User not found.
 500 Internal Server Error: An error occurred while removing the medicine from favorites.
+
 
 Medicine Routes
 
@@ -71,6 +76,7 @@ Responses:
 400 Bad Request: Invalid id format.
 404 Not Found: Medicine not found.
 500 Internal Server Error: An error occurred while retrieving the medicine details.
+
 
 Pharmacy Routes
 GET /pharmacy/?medicineId=xyz
