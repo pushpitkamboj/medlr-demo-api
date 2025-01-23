@@ -1,29 +1,31 @@
-FROM node:18-slim
+# Base image
+FROM node:18
 
-# Switch to the node user
-USER node
+# Create a new user with UID 1000
+RUN useradd -m -u 1000 user
 
-# Set environment variables for the user
-ENV HOME=/home/node \
-    PATH=/home/node/.local/bin:$PATH
+# Switch to the new user
+USER user
+
+# Set environment variables
+ENV HOME=/home/user \
+    PATH=/home/user/.local/bin:$PATH
 
 # Set the working directory
 WORKDIR $HOME/app
 
-# Copy the package.json and package-lock.json files to the working directory
-COPY --chown=node:node package*.json ./
+# Copy package.json and package-lock.json, setting ownership to the new user
+COPY --chown=user:user package*.json ./
 
-# Install Node.js dependencies
+# Install dependencies
 RUN npm install
+RUN npm run build
 
-# Copy the application code to the working directory
-COPY --chown=node:node . .
+# Copy the rest of the application code, setting ownership to the new user
+COPY --chown=user:user . .
 
-# Ensure the ownership of the directory to the node user
-RUN chown -R node:node .
-
-# Expose the port the app runs on
+# Expose the application port
 EXPOSE 7860
 
-# Command to run the Node.js server a
-CMD ["node", "server.js"]
+# Command to run the application
+CMD ["npm", "start"]
