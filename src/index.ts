@@ -6,7 +6,7 @@ import errorHandler from './middleware/errorHnadler';
 
 const app: Application = express();
 
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 // Middleware
 app.use(express.json());
