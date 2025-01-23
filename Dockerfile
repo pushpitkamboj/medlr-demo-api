@@ -1,38 +1,17 @@
-# Use Node.js base image
+
+# Use an official Node.js runtime as a parent image
 FROM node:18
-
-# Create a new user with UID 1000
-RUN useradd -m -u 1000 user
-
-# Set environment variables
-ENV HOME=/home/user \
-    PATH=/home/user/.local/bin:$PATH
-
-# Set the working directory
-WORKDIR $HOME/app
-
-# Switch to the new user
-USER user
-
-# Upgrade npm to avoid permission issues and ensure compatibility
-RUN npm install -g npm@latest
-
-# Copy package.json and package-lock.json with ownership to the new user
-COPY --chown=user:user package*.json ./
-
-# Install dependencies
-RUN npm install --no-cache --silent
+# Create a user for running the application
+# Set working directory
+WORKDIR /app
+# Copy package.json and install Node.js dependencies
+COPY --chown=node ./package.json /app/package.json
+RUN npm install
 RUN npm run build
-
-# Copy the remaining application code and set ownership
-COPY --chown=user:user . .
-
-# Set permissions for potential writable directories (e.g., logs, uploads)
-RUN mkdir -p logs uploads && \
-    chown -R user:user logs uploads
-
-# Expose the application port
+# Copy application code
+COPY --chown=node . /app
+# Expose port
 EXPOSE 7860
-
+# Run the serve
 # Command to run the application
 CMD ["npm", "start"]
