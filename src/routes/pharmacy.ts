@@ -24,9 +24,19 @@ router.get('/pharmacies', async (req: Request, res: Response) => {
       const objectId = new mongoose.Types.ObjectId(medicineId);
 
       // Query to find pharmacies where the medicine exists
-      const pharmacies = await Pharmacy.find({
-          medicines: { $elemMatch: { medicineId: objectId } }
-      }).select('-medicines');
+      const pharmacies = await Pharmacy.aggregate([
+        { $match: { "medicines.medicineId": objectId } },
+        { $unwind: "$medicines" },
+        { $match: { "medicines.medicineId": objectId } },
+        {
+            $project: {
+                name: 1,
+                location: 1,
+                contact: 1,
+                price: "$medicines.price"
+            }
+        }
+      ]);
 
       // Return response
       if (pharmacies.length === 0) {
